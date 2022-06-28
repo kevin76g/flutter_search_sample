@@ -74,7 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
               fruits.addAll(snapshot.data!);
               children.add(Text(
                 '${fruits.length} found',
-                style: const TextStyle(fontSize: 18.0, color: Colors.grey),
+                style: const TextStyle(fontSize: 16.0, color: Colors.grey),
               ));
               children.add(const SizedBox(
                 height: 20.0,
