@@ -112,6 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
             }
             return Center(
               child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 children: children,
               ),
             );
