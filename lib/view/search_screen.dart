@@ -39,7 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
         labelStyle: const TextStyle(
           color: Colors.blue,
         ),
-        hintText: 'キーワードを入力してください',
+        hintText: 'Enter a keyword',
         suffixIcon: IconButton(
           icon: const Icon(
             Icons.cancel,
