@@ -9,7 +9,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   String _searchText = '';
 
   Future<List<Fruit>> _getSearchResult(keyword) async {
@@ -18,10 +18,11 @@ class _SearchScreenState extends State<SearchScreen> {
     return result;
   }
 
-  TextFormField buildTextFormField(BuildContext context) {
+  TextFormField _buildTextFormField(
+      BuildContext context, TextEditingController controller) {
     return TextFormField(
       //検索フィールドの表示
-      controller: _searchController,
+      controller: controller,
       cursorColor: Colors.grey.shade500,
       autofocus: true,
       onChanged: (text) {
@@ -30,43 +31,48 @@ class _SearchScreenState extends State<SearchScreen> {
         });
       },
       style: const TextStyle(fontSize: 18.0),
-      decoration: InputDecoration(
-        fillColor: Colors.grey.shade300,
-        icon: Icon(
-          Icons.search,
-          color: Theme.of(context).primaryColor,
-        ),
-        labelStyle: const TextStyle(
-          color: Colors.blue,
-        ),
-        hintText: 'Enter a keyword',
-        suffixIcon: IconButton(
-          icon: const Icon(
-            Icons.cancel,
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              _searchController.clear();
-              _searchText = ''; //検索文字列のクリア
-            });
-          },
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-        ),
-        focusedBorder: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).primaryColor, width: 1.0)),
-      ),
+      decoration: _inputDecoration(context, controller),
     );
   }
 
-  Container buildResultContainer() {
+  InputDecoration _inputDecoration(
+      BuildContext context, TextEditingController controller) {
+    return InputDecoration(
+      fillColor: Colors.grey.shade300,
+      icon: Icon(
+        Icons.search,
+        color: Theme.of(context).primaryColor,
+      ),
+      labelStyle: const TextStyle(
+        color: Colors.blue,
+      ),
+      hintText: 'Enter a keyword',
+      suffixIcon: IconButton(
+        icon: const Icon(
+          Icons.cancel,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          setState(() {
+            controller.clear();
+            _searchText = ''; //検索文字列のクリア
+          });
+        },
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Theme.of(context).primaryColor, width: 1.0)),
+    );
+  }
+
+  Container _buildResultContainer(String text) {
     return Container(
         color: Colors.white,
         child: FutureBuilder<List<Fruit>>(
-          future: _getSearchResult(_searchText),
+          future: _getSearchResult(text),
           builder: (BuildContext context, AsyncSnapshot<List<Fruit>> snapshot) {
             List<Widget> children = [];
             List<Fruit> fruits = [];
@@ -121,6 +127,12 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -134,12 +146,12 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(
               height: 30.0,
             ),
-            buildTextFormField(context),
+            _buildTextFormField(context, _controller),
             const SizedBox(
               height: 30.0,
             ),
             Expanded(
-              child: buildResultContainer(),
+              child: _buildResultContainer(_searchText),
             ),
           ],
         ),
